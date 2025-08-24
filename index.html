@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Warung Al Sakho</title>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- Tambahkan di bagian head -->
+    <meta name="theme-color" content="#1a3c34">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Warung Al Sakho">
+    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIldhcnVuZyBBbCBTYWtobyIsCiAgInNob3J0X25hbWUiOiAiV2FydW5nQWxTYWhoIiwKICAiZGVzY3JpcHRpb24iOiAiQXBsaWthc2kgUG9pbnQgb2YgU2FsZSB1bnR1ayBXYXJ1bmcgQWwgU2FraG8iLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzFhM2MzNCIsCiAgInRoZW1lX2NvbG9yIjogIiMxYTNjMzQiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImh0dHBzOi892F2ZWNvbi1nZW5lcmF0b3IubmV0L2ltZy9mYXZpY29uLTUxMngtNTEyLnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0sCiAgImNhdGVnb3JpZXMiOiBbImJ1c2luZXNzIiwgInByb2R1Y3Rpdml0eSJdCn0=">
+ <style>
+/* Reset dan Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f4f7fa 0%, #e4e7eb 100%);
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+h1 {
+    font-size: 2.2rem;
+    color: #1a3c34;
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 800;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Navigation - Tombol Utama */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+nav button {
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1 0 auto;
+    min-width: 140px;
+    max-width: 200px;
+}
+
+/* Warna berbeda untuk setiap tombol navigasi utama */
+nav button:nth-child(1) {
+    background: linear-gradient(to bottom, #4CAF50, #2E7D32); /* Hijau - Manajemen */
+}
+nav button:nth-child(2) {
+    background: linear-gradient(to bottom, #2196F3, #1565C0); /* Biru - Penjualan */
+}
+nav button:nth-child(3) {
+    background: linear-gradient(to bottom, #9C27B0, #6A1B9A); /* Ungu - Statistik */
+}
+nav button:nth-child(4) {
+    background: linear-gradient(to bottom, #FF9800, #E65100); /* Oranye - Backup */
+}
+nav button:nth-child(5) {
+    background: linear-gradient(to bottom, #607D8B, #37474F); /* Abu-abu - Catatan */
+}
+nav button:nth-child(6) {
+    background: linear-gradient(to bottom, #795548, #4E342E); /* Coklat - Storage */
+}
+
+nav button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+nav button:nth-child(1):hover {
+    background: linear-gradient(to bottom, #66BB6A, #388E3C);
+}
+nav button:nth-child(2):hover {
+    background: linear-gradient(to bottom, #42A5F5, #1976D2);
+}
+nav button:nth-child(3):hover {
+    background: linear-gradient(to bottom, #AB47BC, #8E24AA);
+}
+nav button:nth-child(4):hover {
+    background: linear-gradient(to bottom, #FFA726, #EF6C00);
+}
+nav button:nth-child(5):hover {
+    background: linear-gradient(to bottom, #78909C, #455A64);
+}
+nav button:nth-child(6):hover {
+    background: linear-gradient(to bottom, #8D6E63, #5D4037);
+}
+
+nav button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Sections */
+section {
+    display: none;
+    background-color: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+section.active {
+    display: block;
+}
+
+/* Sub-Manajemen */
+#manajemen > div {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+}
+
+#manajemen > div.sub-active {
+    display: block;
+}
+
+/* Headings dalam Section */
+h2 {
+    font-size: 1.6rem;
+    color: #1a3c34;
+    margin-bottom: 20px;
+    font-weight: 700;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eaeaea;
+}
+
+h3 {
+    font-size: 1.3rem;
+    color: #1a3c34;
+    margin: 15px 0;
+    font-weight: 600;
+}
+
+/* Form Inputs */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #1a3c34;
+    box-shadow: 0 0 0 3px rgba(26, 60, 52, 0.15);
+    background-color: white;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Tombol di dalam section - Warna berbeda */
+button {
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 8px 0;
+}
+
+/* Warna untuk tombol berdasarkan fungsi */
+button[onclick*="tambah"],
+button[onclick*="Tambah"],
+button[onclick*="Simpan"] {
+    background: linear-gradient(to bottom, #4CAF50, #2E7D32); /* Hijau untuk aksi tambah/simpan */
+}
+
+button[onclick*="update"],
+button[onclick*="Update"] {
+    background: linear-gradient(to bottom, #2196F3, #1565C0); /* Biru untuk aksi update */
+}
+
+button[onclick*="hapus"],
+button[onclick*="Hapus"],
+button[onclick*="X"] {
+    background: linear-gradient(to bottom, #F44336, #C62828); /* Merah untuk aksi hapus */
+}
+
+button[onclick*="cari"],
+button[onclick*="Cari"],
+button[onclick*="scan"],
+button[onclick*="Scan"] {
+    background: linear-gradient(to bottom, #FF9800, #E65100); /* Oranye untuk aksi cari/scan */
+}
+
+button[onclick*="cetak"],
+button[onclick*="Cetak"],
+button[onclick*="export"],
+button[onclick*="Export"] {
+    background: linear-gradient(to bottom, #9C27B0, #6A1B9A); /* Ungu untuk aksi cetak/export */
+}
+
+button[onclick*="backup"],
+button[onclick*="Backup"],
+button[onclick*="restore"],
+button[onclick*="Restore"] {
+    background: linear-gradient(to bottom, #607D8B, #37474F); /* Abu-abu untuk backup/restore */
+}
+
+/* Efek hover untuk semua tombol */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button[onclick*="tambah"]:hover,
+button[onclick*="Tambah"]:hover,
+button[onclick*="Simpan"]:hover {
+    background: linear-gradient(to bottom, #66BB6A, #388E3C);
+}
+
+button[onclick*="update"]:hover,
+button[onclick*="Update"]:hover {
+    background: linear-gradient(to bottom, #42A5F5, #1976D2);
+}
+
+button[onclick*="hapus"]:hover,
+button[onclick*="Hapus"]:hover,
+button[onclick*="X"]:hover {
+    background: linear-gradient(to bottom, #EF5350, #D32F2F);
+}
+
+button[onclick*="cari"]:hover,
+button[onclick*="Cari"]:hover,
+button[onclick*="scan"]:hover,
+button[onclick*="Scan"]:hover {
+    background: linear-gradient(to bottom, #FFA726, #EF6C00);
+}
+
+button[onclick*="cetak"]:hover,
+button[onclick*="Cetak"]:hover,
+button[onclick*="export"]:hover,
+button[onclick*="Export"]:hover {
+    background: linear-gradient(to bottom, #AB47BC, #8E24AA);
+}
+
+button[onclick*="backup"]:hover,
+button[onclick*="Backup"]:hover,
+button[onclick*="restore"]:hover,
+button[onclick*="Restore"]:hover {
+    background: linear-gradient(to bottom, #78909C, #455A64);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+    background-color: #f3f4f6;
+    font-weight: 700;
+    color: #1a3c34;
+    font-size: 1.05rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr {
+    transition: background-color 0.2s ease;
+}
+
+tr:hover {
+    background-color: #f9fafb;
+}
+
+td input[type="number"] {
+    width: 70px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+th {
+    background: linear-gradient(to bottom, #1a3c34, #153028) !important;
+    color: white !important;
+    font-weight: 700;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+/* Warna untuk baris tabel - bergantian (zebra pattern) */
+tbody tr:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+/* Efek hover untuk baris tabel */
+tbody tr:hover {
+    background-color: #e8f5e9 !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Warna khusus untuk tabel di section Penjualan */
+#penjualan table tbody tr:nth-child(odd) {
+    background-color: #e3f2fd;
+}
+
+#penjualan table tbody tr:nth-child(even) {
+    background-color: #bbdefb;
+}
+
+#penjualan table tbody tr:hover {
+    background-color: #90caf9 !important;
+}
+
+/* Warna khusus untuk tabel di section Manajemen */
+#manajemen table tbody tr:nth-child(odd) {
+    background-color: #e8f5e9;
+}
+
+#manajemen table tbody tr:nth-child(even) {
+    background-color: #c8e6c9;
+}
+
+#manajemen table tbody tr:hover {
+    background-color: #a5d6a7 !important;
+}
+
+/* Border radius untuk tabel */
+table {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Padding yang nyaman untuk sel tabel */
+th, td {
+    padding: 14px 16px;
+    border: none;
+}
+
+/* Riwayat List */
+#riwayat-list {
+    list-style-type: none;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#riwayat-list li {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e5e7eb;
+    animation: fadeIn 0.4s ease-out;
+}
+
+#riwayat-list li:last-child {
+    border-bottom: none;
+}
+
+/* Scanner Container */
+#scanner-container {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    margin: 20px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Struk */
+.struk {
+    display: none;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+    padding: 25px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.struk div {
+    margin: 8px 0;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .struk, .struk * {
+        visibility: visible;
+    }
+    .struk {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+    }
+}
+
+/* Storage Bar */
+#storage-bar {
+    width: 100%;
+    height: 24px;
+    background-color: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 15px 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#storage-progress {
+    height: 100%;
+    background: linear-gradient(to right, #4CAF50, #2E7D32);
+    transition: width 0.5s ease;
+    border-radius: 12px;
+}
+
+/* Form Groups untuk tata letak yang lebih baik */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a3c34;
+}
+
+/* Grid layout untuk form */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Card untuk elemen-elemen UI */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+/* Animasi untuk elemen yang dimuat */
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Responsive Design untuk Mobile (max-width: 600px) */
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+        font-size: 18px; /* Font size 18px untuk mobile */
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav button {
+        width: 100%;
+        max-width: none;
+        padding: 16px;
+        font-size: 1.1rem;
+        min-width: unset;
+    }
+
+    section {
+        padding: 20px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+        padding: 16px;
+        font-size: 1.05rem;
+        margin: 12px 0;
+    }
+
+    button {
+        width: 100%;
+        padding: 16px;
+        font-size: 1.1rem;
+        margin: 10px 0;
+    }
+
+    table {
+        font-size: 0.95rem;
+    }
+
+    th, td {
+        padding: 12px 10px;
+    }
+
+    td input[type="number"] {
+        width: 60px;
+        padding: 8px;
+    }
+
+    #scanner-container {
+        height: 250px;
+        max-width: 100%;
+    }
+
+    #riwayat-list {
+        max-height: 250px;
+        font-size: 0.95rem;
+        padding: 12px;
+    }
+
+    #riwayat-list li {
+        padding: 14px 12px;
+    }
+
+    .struk {
+        font-size: 0.95rem;
+        padding: 20px;
+    }
+    
+    /* Tombol khusus untuk mobile */
+    .mobile-btn {
+        padding: 14px;
+        font-size: 1rem;
+    }
+    
+    /* Perbaikan tampilan form pada mobile */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+/* Tambahan untuk tampilan yang sangat kecil (max-width: 350px) */
+@media (max-width: 350px) {
+    body {
+        padding: 10px;
+        font-size: 16px;
+    }
+    
+    section {
+        padding: 15px;
+    }
+    
+    nav button {
+        padding: 14px;
+    }
+}
+ </style>
+</head>
+<body>
+    <h1>Warung Al Sakho</h1>
+    <nav>
+        <button onclick="switchSection('manajemen')">Manajemen Barang</button>
+        <button onclick="switchSection('penjualan')">Penjualan</button>
+        <button onclick="switchSection('statistik')">Statistik</button>
+        <button onclick="switchSection('backup')">Backup/Restore</button>
+        <button onclick="switchSection('catatan')">Catatan</button>
+        <button onclick="switchSection('storage')">Storage</button>
+    </nav>
+
+    <section id="manajemen">
+        <nav>
+            <button onclick="switchSubManajemen('tambah-barang')">Tambah Barang</button>
+            <button onclick="switchSubManajemen('update-stok')">Update Stok</button>
+            <button onclick="switchSubManajemen('update-harga')">Update Harga</button>
+            <button onclick="switchSubManajemen('tambah-barcode')">Tambah Barcode</button>
+        </nav>
+        <div id="tambah-barang" class="sub-active">
+            <h2>Tambah Barang Baru</h2>
+            <input type="text" id="nama-baru" placeholder="Nama Barang">
+            <input type="text" id="harga-baru" placeholder="Harga (Rp)" oninput="formatRupiah(this)">
+            <input type="number" id="stok-awal" placeholder="Stok Awal">
+            <input type="text" id="barcode-baru" placeholder="Barcode (opsional)">
+            <button onclick="tambahBarangBaru()">Simpan</button>
+        </div>
+        <div id="update-stok">
+            <h2>Update Stok</h2>
+            <input type="text" id="nama-update-stok" list="barang-list" placeholder="Nama Barang">
+            <datalist id="barang-list"></datalist>
+            <input type="number" id="update-stok-val" placeholder="Update Stok (tambah/kurang)">
+            <button onclick="updateStok()">Update</button>
+        </div>
+        <div id="update-harga">
+            <h2>Update Harga</h2>
+            <input type="text" id="nama-update-harga" list="barang-list" placeholder="Nama Barang">
+            <input type="text" id="harga-baru-update" placeholder="Harga Baru (Rp)" oninput="formatRupiah(this)">
+            <button onclick="updateHarga()">Simpan</button>
+        </div>
+        <div id="tambah-barcode">
+            <h2>Tambah Barcode</h2>
+            <input type="text" id="nama-tambah-barcode" list="barang-list" placeholder="Nama Barang">
+            <input type="text" id="barcode-tambah" placeholder="Barcode">
+            <button onclick="tambahBarcode()">Simpan</button>
+        </div>
+    </section>
+
+    <section id="penjualan">
+        <h2>Pencarian Barang</h2>
+        <input type="text" id="search-nama" placeholder="Cari Nama Barang" oninput="cariBarang()">
+        <table id="search-result">
+            <thead><tr><th>Nama</th><th>Harga</th><th>Stok</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="startScanner()">Scan Barcode</button>
+        <button onclick="stopScanner()" style="display: none;" id="tutup-scanner">Tutup Scanner</button>
+        <div id="scanner-container"></div>
+        <h2>Keranjang Belanja</h2>
+        <table id="keranjang">
+            <thead><tr><th>Nama</th><th>Harga</th><th>Jumlah</th><th>Total</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <h3>Total Harga: <span id="total-harga">0</span></h3>
+        <input type="text" id="nominal-pembeli" placeholder="Nominal Pembeli (Rp)" oninput="formatRupiah(this); hitungKembalian()">
+        <h3>Kembalian: <span id="kembalian">0</span></h3>
+        <button onclick="cetakStruk()">Cetak Struk</button>
+        <button onclick="exportToWA()">Export ke WA</button>
+        <h2>Riwayat Belanja</h2>
+        <ul id="riwayat-list"></ul>
+    </section>
+
+    <section id="statistik">
+        <h2>Omset Perbulan</h2>
+        <canvas id="omset-chart"></canvas>
+        <h2>Top 10 Barang Terlaris Bulan Ini</h2>
+        <canvas id="top-barang-chart"></canvas>
+        <h2>Laba Bersih Perbulan (10%)</h2>
+        <canvas id="laba-chart"></canvas>
+    </section>
+
+    <section id="backup">
+        <button onclick="backupJSON()">Backup JSON</button>
+        <button onclick="backupTXT()">Backup TXT</button>
+        <button onclick="backupCSV()">Backup CSV</button>
+        <input type="file" id="restore-file" accept=".json">
+        <button onclick="restoreJSON()">Restore JSON</button>
+    </section>
+
+    <section id="catatan">
+        <h2>Catatan Warung</h2>
+        <textarea id="catatan-text" rows="10" cols="50"></textarea>
+        <button onclick="simpanCatatan()" style = "background-color : #2E7D32 ;">Simpan</button>
+    </section>
+
+    <section id="storage">
+        <h2>Kapasitas Storage</h2>
+        <div id="storage-bar"><div id="storage-progress"></div></div>
+        <p id="storage-info"></p>
+        <button onclick="updateStorageInfo()">Update</button>
+    </section>
+
+    <div class="struk" id="struk-print">
+        ============================<br>
+              WARUNG AL SAKHO      <br>
+        Bayalangu Kidul, Kab. Cirebon  <br>
+        ============================<br>
+                 BARANG BELANJA        <br>
+        ============================<br>
+        <div id="struk-items"></div><br>
+        ============================<br>
+         TOTAL: Rp<span id="struk-total">0</span><br>
+         LABA BERSIH (10%): Rp<span id="struk-laba">0</span>  <br>
+        ============================
+    </div>
+
+    <script>
+        let db;
+        const dbName = 'DataWarungDB';
+        let keranjang = [];
+        let riwayat = [];
+        let barangList = [];
+        let scanner;
+        let charts = {}; // Store Chart.js instances
+        let isScanning = false;
+
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName, 1);
+                request.onerror = () => reject('DB error');
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve();
+                };
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    db.createObjectStore('barang', { keyPath: 'nama' });
+                    db.createObjectStore('riwayat', { autoIncrement: true });
+                };
+            });
+        }
+
+        async function loadAll() {
+            try {
+                await initDB();
+                await Promise.all([loadBarang(), loadRiwayat(), loadCatatan()]);
+                switchSection(localStorage.getItem('activeSection') || 'penjualan');
+                switchSubManajemen(localStorage.getItem('activeSubManajemen') || 'tambah-barang');
+                updateStatistik();
+                updateStorageInfo();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Gagal memuat data. Silakan coba lagi.');
+            }
+        }
+
+        async function loadBarang() {
+            if (!db) throw new Error('Database not initialized');
+            const tx = db.transaction('barang', 'readonly');
+            const store = tx.objectStore('barang');
+            const req = store.getAll();
+            return new Promise((resolve) => {
+                req.onsuccess = () => {
+                    barangList = req.result;
+                    updateDatalist();
+                    resolve();
+                };
+            });
+        }
+
+        async function loadRiwayat() {
+            if (!db) throw new Error('Database not initialized');
+            const tx = db.transaction('riwayat', 'readonly');
+            const store = tx.objectStore('riwayat');
+            const req = store.getAll();
+            return new Promise((resolve) => {
+                req.onsuccess = () => {
+                    riwayat = req.result;
+                    updateRiwayatList();
+                    resolve();
+                };
+            });
+        }
+
+        function updateDatalist() {
+            const datalist = document.getElementById('barang-list');
+            datalist.innerHTML = '';
+            barangList.forEach(b => {
+                const option = document.createElement('option');
+                option.value = b.nama;
+                datalist.appendChild(option);
+            });
+        }
+
+        function formatRupiah(input) {
+            let value = input.value.replace(/\D/g, '');
+            value = parseInt(value) || 0;
+            input.value = value.toLocaleString('id-ID');
+        }
+
+        function unformatRupiah(str) {
+            return parseInt(str.replace(/\./g, '')) || 0;
+        }
+
+        function switchSection(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            localStorage.setItem('activeSection', id);
+        }
+
+        function switchSubManajemen(id) {
+            document.querySelectorAll('#manajemen > div').forEach(d => d.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            localStorage.setItem('activeSubManajemen', id);
+        }
+
+        async function tambahBarangBaru() {
+            if (!db) return alert('Database belum siap');
+            const nama = document.getElementById('nama-baru').value;
+            const harga = unformatRupiah(document.getElementById('harga-baru').value);
+            const stok = parseInt(document.getElementById('stok-awal').value) || 0;
+            const barcode = document.getElementById('barcode-baru').value;
+            if (!nama || harga <= 0) return alert('Nama dan harga wajib');
+            const tx = db.transaction('barang', 'readwrite');
+            const store = tx.objectStore('barang');
+            store.put({ nama, harga, stok, barcode });
+            await new Promise(resolve => tx.oncomplete = resolve);
+            await loadBarang();
+            // Reset form
+            document.getElementById('nama-baru').value = '';
+            document.getElementById('harga-baru').value = '';
+            document.getElementById('stok-awal').value = '';
+            document.getElementById('barcode-baru').value = '';
+            alert('Barang ditambahkan');
+        }
+        
+        async function updateStok() {
+            if (!db) return alert('Database belum siap');
+            const nama = document.getElementById('nama-update-stok').value;
+            const delta = parseInt(document.getElementById('update-stok-val').value) || 0;
+            const barang = barangList.find(b => b.nama === nama);
+            if (!barang) return alert('Barang tidak ditemukan');
+            barang.stok += delta;
+            const tx = db.transaction('barang', 'readwrite');
+            const store = tx.objectStore('barang');
+            store.put(barang);
+            await new Promise(resolve => tx.oncomplete = resolve);
+            await loadBarang();
+            // Reset form
+            document.getElementById('nama-update-stok').value = '';
+            document.getElementById('update-stok-val').value = '';
+            alert('Stok telah di Update');
+        }
+        
+        async function updateHarga() {
+            if (!db) return alert('Database belum siap');
+            const nama = document.getElementById('nama-update-harga').value;
+            const harga = unformatRupiah(document.getElementById('harga-baru-update').value);
+            const barang = barangList.find(b => b.nama === nama);
+            if (!barang || harga <= 0) return alert('Barang atau harga invalid');
+            barang.harga = harga;
+            const tx = db.transaction('barang', 'readwrite');
+            const store = tx.objectStore('barang');
+            store.put(barang);
+            await new Promise(resolve => tx.oncomplete = resolve);
+            await loadBarang();
+            // Reset form
+            document.getElementById('nama-update-harga').value = '';
+            document.getElementById('harga-baru-update').value = '';
+            alert('Harga telah di Update');
+        }
+        
+        async function tambahBarcode() {
+            if (!db) return alert('Database belum siap');
+            const nama = document.getElementById('nama-tambah-barcode').value;
+            const barcode = document.getElementById('barcode-tambah').value;
+            const barang = barangList.find(b => b.nama === nama);
+            if (!barang || !barcode) return alert('Barang atau barcode invalid');
+            barang.barcode = barcode;
+            const tx = db.transaction('barang', 'readwrite');
+            const store = tx.objectStore('barang');
+            store.put(barang);
+            await new Promise(resolve => tx.oncomplete = resolve);
+            await loadBarang();
+            // Reset form
+            document.getElementById('nama-tambah-barcode').value = '';
+            document.getElementById('barcode-tambah').value = '';
+            alert('Barcode ditambahkan');
+        }
+
+        function cariBarang() {
+            const query = document.getElementById('search-nama').value.toLowerCase();
+            const tbody = document.querySelector('#search-result tbody');
+            tbody.innerHTML = '';
+            barangList.filter(b => b.nama.toLowerCase().includes(query)).forEach(b => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${b.nama}</td>
+                    <td>${b.harga.toLocaleString('id-ID')}</td>
+                    <td>${b.stok}</td>
+                    <td><input type="number" value="1" min="1" max="${b.stok}"></td>
+                    <td><button onclick="tambahKeKeranjang('${b.nama}', this.parentElement.previousElementSibling.firstChild.value)">Tambah</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function tambahKeKeranjang(nama, jumlah) {
+            if (!db) return alert('Database belum siap');
+            jumlah = parseInt(jumlah) || 1;
+            const barang = barangList.find(b => b.nama === nama);
+            if (!barang || barang.stok < jumlah) return alert('Stok tidak cukup');
+            const existing = keranjang.find(k => k.nama === nama);
+            if (existing) {
+                existing.jumlah += jumlah;
+                existing.total += barang.harga * jumlah;
+            } else {
+                keranjang.push({ nama, harga: barang.harga, jumlah, total: barang.harga * jumlah });
+            }
+            barang.stok -= jumlah;
+            updateKeranjangTable();
+            await simpanRiwayat({ nama, jumlah, harga: barang.harga });
+            await updateStokDB(barang);
+        }
+
+        async function updateStokDB(barang) {
+            if (!db) return alert('Database belum siap');
+            const tx = db.transaction('barang', 'readwrite');
+            const store = tx.objectStore('barang');
+            store.put(barang);
+            await new Promise(resolve => tx.oncomplete = resolve);
+        }
+
+        function hapusDariKeranjang(index) {
+            const item = keranjang.splice(index, 1)[0];
+            const barang = barangList.find(b => b.nama === item.nama);
+            barang.stok += item.jumlah;
+            updateKeranjangTable();
+            updateStokDB(barang);
+        }
+
+        function updateKeranjangTable() {
+            const tbody = document.querySelector('#keranjang tbody');
+            tbody.innerHTML = '';
+            let total = 0;
+            keranjang.forEach((k, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${k.nama}</td>
+                    <td>${k.harga.toLocaleString('id-ID')}</td>
+                    <td>${k.jumlah}</td>
+                    <td>${k.total.toLocaleString('id-ID')}</td>
+                    <td><button onclick="hapusDariKeranjang(${i})">X</button></td>
+                `;
+                tbody.appendChild(tr);
+                total += k.total;
+            });
+            document.getElementById('total-harga').textContent = total.toLocaleString('id-ID');
+            hitungKembalian();
+        }
+
+        async function simpanRiwayat(item) {
+            if (!db) return alert('Database belum siap');
+            const timestamp = new Date();
+            const existing = riwayat.find(r => r.timestamp.toISOString().slice(0,10) === timestamp.toISOString().slice(0,10) && r.items.some(i => i.nama === item.nama));
+            if (existing) {
+                const exItem = existing.items.find(i => i.nama === item.nama);
+                exItem.jumlah += item.jumlah;
+                exItem.total += item.harga * item.jumlah;
+                existing.total += item.harga * item.jumlah;
+            } else {
+                riwayat.push({ timestamp, items: [{...item, total: item.harga * item.jumlah}], total: item.harga * item.jumlah });
+            }
+            const tx = db.transaction('riwayat', 'readwrite');
+            const store = tx.objectStore('riwayat');
+            store.clear();
+            riwayat.forEach(r => store.add(r));
+            await new Promise(resolve => tx.oncomplete = resolve);
+            updateRiwayatList();
+        }
+
+        function updateRiwayatList() {
+            const ul = document.getElementById('riwayat-list');
+            ul.innerHTML = '';
+            riwayat.slice(-100).forEach(r => {
+                r.items.forEach(i => {
+                    const li = document.createElement('li');
+                    li.textContent = `${i.nama} ${i.jumlah}x = ${i.total.toLocaleString('id-ID')}`;
+                    ul.appendChild(li);
+                });
+            });
+            updateStatistik();
+        }
+
+        function hitungKembalian() {
+            const total = unformatRupiah(document.getElementById('total-harga').textContent);
+            const bayar = unformatRupiah(document.getElementById('nominal-pembeli').value);
+            const kembalian = bayar - total;
+            const span = document.getElementById('kembalian');
+            if (kembalian > 0) span.textContent = kembalian.toLocaleString('id-ID');
+            else if (kembalian === 0) span.textContent = 'Uang pas';
+            else span.textContent = `Uang kurang ${Math.abs(kembalian).toLocaleString('id-ID')}`;
+        }
+
+        function startScanner() {
+            const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0, facingMode: 'environment', disableFlip: false };
+            scanner = new Html5Qrcode('scanner-container');
+            scanner.start({ facingMode: 'environment' }, config, onScanSuccess)
+                .then(() => {
+                    // Tampilkan tombol tutup scanner
+                    document.getElementById('tutup-scanner').style.display = 'block';
+                    // Sembunyikan tombol start scanner
+                    document.querySelector('button[onclick="startScanner()"]').style.display = 'none';
+                })
+                .catch(err => {
+                    console.error('Gagal memulai scanner:', err);
+                    alert('Gagal memulai scanner. Pastikan izin kamera diberikan.');
+                });
+        }
+        
+        function stopScanner() {
+            if (scanner) {
+                scanner.stop()
+                    .then(() => {
+                        scanner.clear();
+                        // Sembunyikan tombol tutup scanner
+                        document.getElementById('tutup-scanner').style.display = 'none';
+                        // Tampilkan kembali tombol start scanner
+                        document.querySelector('button[onclick="startScanner()"]').style.display = 'block';
+                        isScanning = false; // Reset flag
+                    })
+                    .catch(err => {
+                        console.error('Gagal menutup scanner:', err);
+                        alert('Gagal menutup scanner.');
+                    });
+            }
+        }
+        
+        async function onScanSuccess(decodedText) {
+            if (isScanning) return; // Cegah scan berulang
+            isScanning = true;
+            const barang = barangList.find(b => b.barcode === decodedText);
+            if (barang) {
+                await tambahKeKeranjang(barang.nama, 1);
+                alert(`${barang.nama} ditambahkan ke keranjang`);
+            } else {
+                alert('Barang tidak ditemukan');
+            }
+            // Jeda 2 detik sebelum scan berikutnya
+            setTimeout(() => {
+                isScanning = false;
+            }, 2000);
+        }
+
+        function destroyCharts() {
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            charts = {};
+        }
+
+        function updateStatistik() {
+            destroyCharts(); // Destroy existing charts
+            const monthlyOmset = {};
+            const monthlyLaba = {};
+            const currentMonth = new Date().toISOString().slice(0,7);
+            const topThisMonth = {};
+
+            riwayat.forEach(r => {
+                const month = r.timestamp.toISOString().slice(0,7);
+                monthlyOmset[month] = (monthlyOmset[month] || 0) + r.total;
+                monthlyLaba[month] = monthlyOmset[month] * 0.1;
+                if (month === currentMonth) {
+                    r.items.forEach(i => {
+                        topThisMonth[i.nama] = (topThisMonth[i.nama] || 0) + i.jumlah;
+                    });
+                }
+            });
+
+            const omsetLabels = Object.keys(monthlyOmset);
+            charts['omset'] = new Chart(document.getElementById('omset-chart'), {
+                type: 'bar',
+                data: { labels: omsetLabels, datasets: [{ label: 'Omset', data: Object.values(monthlyOmset), backgroundColor: '#4caf50' }] }
+            });
+
+            const topSorted = Object.entries(topThisMonth).sort((a,b) => b[1] - a[1]).slice(0,10);
+            charts['top-barang'] = new Chart(document.getElementById('top-barang-chart'), {
+                type: 'doughnut',
+                data: { labels: topSorted.map(t => t[0]), datasets: [{ data: topSorted.map(t => t[1]), backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf', '#f7786b', '#6b7280'] }] }
+            });
+
+            charts['laba'] = new Chart(document.getElementById('laba-chart'), {
+                type: 'bar',
+                data: { labels: omsetLabels, datasets: [{ label: 'Laba', data: Object.values(monthlyLaba), backgroundColor: '#2196f3' }] }
+            });
+        }
+
+        function cetakStruk() {
+            const itemsDiv = document.getElementById('struk-items');
+            itemsDiv.innerHTML = '';
+            keranjang.forEach(k => {
+                itemsDiv.innerHTML += `${k.nama} ${k.jumlah}x @${k.harga.toLocaleString('id-ID')} = ${k.total.toLocaleString('id-ID')}<br>`;
+            });
+            const total = keranjang.reduce((sum, k) => sum + k.total, 0);
+            document.getElementById('struk-total').textContent = total.toLocaleString('id-ID');
+            document.getElementById('struk-laba').textContent = (total * 0.1).toLocaleString('id-ID');
+            window.print();
+        }
+
+        function exportToWA() {
+            let text = 'WARUNG AL SAKHO\nBayalangu Kidul, Kab. Cirebon\n\nBARANG BELANJA\n';
+            keranjang.forEach(k => {
+                text += `${k.nama} ${k.jumlah}x = ${k.total.toLocaleString('id-ID')}\n`;
+            });
+            const total = keranjang.reduce((sum, k) => sum + k.total, 0);
+            text += `\nTOTAL: Rp${total.toLocaleString('id-ID')}\nLABA BERSIH (10%): Rp${(total * 0.1).toLocaleString('id-ID')}`;
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url);
+        }
+
+        async function backupJSON() {
+            if (!db) return alert('Database belum siap');
+            const data = { barang: barangList, riwayat: riwayat };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backupToko.json';
+            a.click();
+        }
+
+        async function backupTXT() {
+            if (!db) return alert('Database belum siap');
+            let text = 'BARANG:\n';
+            barangList.forEach(b => {
+                text += `${b.nama} - Harga: ${b.harga.toLocaleString('id-ID')} - Stok: ${b.stok} - Barcode: ${b.barcode || ''}\n`;
+            });
+            text += '\nRIWAYAT:\n';
+            riwayat.forEach(r => {
+                r.items.forEach(i => {
+                    text += `${i.nama} ${i.jumlah}x = ${i.total.toLocaleString('id-ID')}\n`;
+                });
+            });
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backupToko.txt';
+            a.click();
+        }
+
+        async function backupCSV() {
+            if (!db) return alert('Database belum siap');
+            let csv = 'Type,Nama,Harga,Stok,Barcode,Jumlah,Total,Timestamp\n';
+            barangList.forEach(b => {
+                csv += `Barang,${b.nama},${b.harga},${b.stok},${b.barcode || ''},,,\n`;
+            });
+            riwayat.forEach(r => {
+                r.items.forEach(i => {
+                    csv += `Riwayat,${i.nama},${i.harga},,${i.jumlah},${i.total},${r.timestamp}\n`;
+                });
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backupToko.csv';
+            a.click();
+        }
+
+        async function restoreJSON() {
+            if (!db) return alert('Database belum siap');
+            const file = document.getElementById('restore-file').files[0];
+            if (!file) return alert('Pilih file JSON terlebih dahulu');
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    // Validasi data
+                    if (!data.barang || !Array.isArray(data.barang)) {
+                        throw new Error('Data barang tidak valid atau tidak ditemukan');
+                    }
+                    // Proses riwayat, jika ada
+                    const riwayat = data.riwayat && Array.isArray(data.riwayat)
+                        ? data.riwayat.map(r => ({
+                            ...r,
+                            timestamp: new Date(r.timestamp), // Konversi string ke Date
+                            items: Array.isArray(r.items) ? r.items : []
+                        }))
+                        : [];
+                    const tx = db.transaction(['barang', 'riwayat'], 'readwrite');
+                    const barangStore = tx.objectStore('barang');
+                    const riwayatStore = tx.objectStore('riwayat');
+                    barangStore.clear();
+                    riwayatStore.clear();
+                    data.barang.forEach(b => barangStore.add(b));
+                    riwayat.forEach(r => riwayatStore.add(r));
+                    await new Promise(resolve => tx.oncomplete = resolve);
+                    await loadAll();
+                    alert('Data berhasil direstore');
+                } catch (error) {
+                    console.error('Restore error:', error);
+                    alert(`Gagal merestore data: ${error.message}`);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function simpanCatatan() {
+            const text = document.getElementById('catatan-text').value;
+            localStorage.setItem('catatan', text);
+            alert('Catatan disimpan');
+        }
+
+        function loadCatatan() {
+            document.getElementById('catatan-text').value = localStorage.getItem('catatan') || '';
+        }
+
+        async function updateStorageInfo() {
+            if (navigator.storage && navigator.storage.estimate) {
+                try {
+                    const estimate = await navigator.storage.estimate();
+                    const usage = estimate.usage / (1024 * 1024);
+                    const quota = 100; // Limit as per request
+                    const used = usage > 1 ? `${usage.toFixed(2)} MB` : `${(estimate.usage / 1024).toFixed(2)} KB`;
+                    document.getElementById('storage-info').textContent = `Used: ${used} / ${quota} MB`;
+                    document.getElementById('storage-progress').style.width = `${(usage / quota) * 100}%`;
+                } catch (error) {
+                    console.error('Storage info error:', error);
+                    document.getElementById('storage-info').textContent = 'Storage info not available';
+                }
+            } else {
+                document.getElementById('storage-info').textContent = 'Storage info not available';
+            }
+        }
+
+        window.addEventListener('load', loadAll);
+    </script>
+<script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+
+  // Install prompt
+  let deferredPrompt;
+  const installButton = document.createElement('button');
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Tampilkan tombol install
+    installButton.style.display = 'block';
+    installButton.textContent = 'Install Aplikasi';
+    installButton.style.margin = '10px auto';
+    installButton.style.padding = '10px 20px';
+    installButton.style.background = 'linear-gradient(to bottom, #4CAF50, #2E7D32)';
+    installButton.style.color = 'white';
+    installButton.style.border = 'none';
+    installButton.style.borderRadius = '5px';
+    installButton.style.cursor = 'pointer';
+    
+    document.querySelector('h1').after(installButton);
+    
+    installButton.addEventListener('click', async () => {
+      installButton.style.display = 'none';
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+    });
+  });
+
+  // Deteksi jika app sudah diinstall
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    if (installButton) installButton.style.display = 'none';
+  });
+</script>
+</body>
+</html>

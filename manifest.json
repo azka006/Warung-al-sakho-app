@@ -1,0 +1,23 @@
+{
+  "name": "Warung Al Sakho",
+  "short_name": "WarungAlSakho",
+  "description": "Aplikasi Point of Sale untuk Warung Al Sakho",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a3c34",
+  "theme_color": "#1a3c34",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity"]
+}
