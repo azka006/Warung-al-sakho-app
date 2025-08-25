@@ -3,6 +3,8 @@ const CACHE_NAME = 'warung-al-sakho-v1';
 const urlsToCache = [
   '/',
   '/index.html',
+  'icon-192.png',
+  'icon-512.png',
   'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js'
 ];
