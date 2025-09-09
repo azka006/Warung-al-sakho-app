@@ -1224,8 +1224,10 @@
             }
             barang.stok -= jumlah;
             updateKeranjangTable();
+            cariBarang();
             await simpanRiwayat({ nama, jumlah, harga: barang.harga });
             await updateStokDB(barang);
+            alert(`${barang.nama} ditambahkan ke keranjang`);
         }
 
         async function updateStokDB(barang) {
