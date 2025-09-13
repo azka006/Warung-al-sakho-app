@@ -809,6 +809,86 @@
             color: #1a3c34;
             font-size: 14px;
         }
+        button[onclick*="connectBluetoothPrinter"] {
+            background: linear-gradient(to bottom, #1976d2, #0d47a1);
+            border: none;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        button[onclick*="connectBluetoothPrinter"]:hover {
+            background: linear-gradient(to bottom, #2196f3, #1976d2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(25, 118, 210, 0.4);
+        }
+        
+        button[onclick*="connectBluetoothPrinter"]:active {
+            transform: translateY(0);
+        }
+        
+        /* Tombol Print Bluetooth */
+        button[onclick*="cetakStrukBluetoothLangsung"] {
+            background: linear-gradient(to bottom, #388e3c, #1b5e20);
+            border: none;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(56, 142, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        button[onclick*="cetakStrukBluetoothLangsung"]:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #4caf50, #388e3c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(56, 142, 60, 0.4);
+        }
+        
+        button[onclick*="cetakStrukBluetoothLangsung"]:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Status Indicator */
+        .bluetooth-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .bluetooth-connected {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .bluetooth-disconnected {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
     </style>
 </head>
 <body>
@@ -887,7 +967,14 @@
         <h3><i class="fas fa-money-bill-wave"></i> Total Harga: <span id="total-harga">0</span></h3>
         <input type="text" id="nominal-pembeli" placeholder="Nominal Pembeli (Rp)" oninput="formatRupiah(this); hitungKembalian()">
         <h3><i class="fas fa-exchange-alt"></i> Kembalian: <span id="kembalian">0</span></h3>
-        <button onclick="cetakStruk()"><i class="fas fa-receipt"></i> Cetak Struk</button>
+        
+        <button onclick="connectBluetoothPrinter()">
+            <i class="fas fa-bluetooth"></i> Connect Printer
+        </button>
+        
+        <button onclick="cetakStrukBluetoothLangsung()" id="btn-print">
+            <i class="fas fa-receipt"></i> Print Struk
+        </button>
         <button onclick="exportToWA()"><i class="fab fa-whatsapp"></i> Export ke WA</button>
         <h2><i class="fas fa-history"></i> Riwayat Belanja</h2>
         <ul id="riwayat-list"></ul>
@@ -1435,16 +1522,169 @@
             });
         }
 
-        function cetakStruk() {
-            const itemsDiv = document.getElementById('struk-items');
-            itemsDiv.innerHTML = '';
-            keranjang.forEach(k => {
-                itemsDiv.innerHTML += `${k.nama} ${k.jumlah}x @${k.harga.toLocaleString('id-ID')} = ${k.total.toLocaleString('id-ID')}<br>`;
-            });
+        let bluetoothDevice = null;
+        let bluetoothCharacteristic = null;
+        
+        async function connectBluetoothPrinter() {
+            try {
+                if (bluetoothDevice && bluetoothDevice.gatt.connected) {
+                    alert('Printer sudah terhubung! ✅');
+                    return true;
+                }
+        
+                alert('Mencari printer Bluetooth...');
+                
+                const device = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { namePrefix: 'TP-' },
+                        { namePrefix: 'BT-' },
+                        { services: ['000018f0-0000-1000-8000-00805f9b34fb'] }
+                    ]
+                });
+        
+                alert(`Menghubungkan ke ${device.name}...`);
+                
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+                const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+                
+                bluetoothDevice = device;
+                bluetoothCharacteristic = characteristic;
+                
+                device.addEventListener('gattserverdisconnected', onDisconnected);
+                
+                alert(`✅ Berhasil terhubung ke ${device.name}!`);
+                updatePrintButton();
+                
+                return true;
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('❌ Gagal connect: ' + error.message);
+                return false;
+            }
+        }
+        
+        function updateBluetoothStatus() {
+            const statusElement = document.getElementById('bluetooth-status');
+            const btnPrint = document.getElementById('btn-print-bluetooth');
+            
+            if (bluetoothDevice && bluetoothDevice.gatt.connected) {
+                statusElement.className = 'bluetooth-status bluetooth-connected';
+                statusElement.innerHTML = `<i class="fas fa-bluetooth"></i> Printer: Terhubung ke ${bluetoothDevice.name}`;
+                btnPrint.disabled = false;
+            } else {
+                statusElement.className = 'bluetooth-status bluetooth-disconnected';
+                statusElement.innerHTML = '<i class="fas fa-bluetooth"></i> Printer: Tidak Terhubung';
+                btnPrint.disabled = true;
+            }
+        }
+        
+        // Panggil fungsi ini setelah connect/disconnect
+        function onDisconnected() {
+            bluetoothDevice = null;
+            bluetoothCharacteristic = null;
+            alert('Printer terputus!');
+            updateBluetoothStatus();
+        }
+
+        async function sendToPrinter(data) {
+            const MAX_CHUNK_SIZE = 512; // Batasan Bluetooth
+            const encoder = new TextEncoder();
+            const encodedData = encoder.encode(data);
+            
+            for (let i = 0; i < encodedData.length; i += MAX_CHUNK_SIZE) {
+                const chunk = encodedData.slice(i, i + MAX_CHUNK_SIZE);
+                await bluetoothCharacteristic.writeValue(chunk);
+                
+                // Tunggu sebentar antara chunk
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+        }
+        
+        async function cetakStrukBluetoothLangsung() {
+    // Validasi keranjang kosong
+            if (keranjang.length === 0) {
+                alert('❌ Keranjang belanja kosong! Tambah barang dulu.');
+                return;
+            }
+        
+            // Validasi nominal pembayaran
             const total = keranjang.reduce((sum, k) => sum + k.total, 0);
-            document.getElementById('struk-total').textContent = total.toLocaleString('id-ID');
-            document.getElementById('struk-laba').textContent = (total * 0.1).toLocaleString('id-ID');
-            window.print();
+            const bayar = unformatRupiah(document.getElementById('nominal-pembeli').value) || 0;
+            
+            if (bayar < total) {
+                alert('❌ Nominal pembayaran kurang!');
+                return;
+            }
+        
+            try {
+                if (!bluetoothDevice || !bluetoothDevice.gatt.connected) {
+                    const connected = await connectBluetoothPrinter();
+                    if (!connected) return;
+                }
+        
+                alert('🖨️ Mencetak struk...');
+                const strukContent = formatStrukUntukPrinter();
+                await sendToPrinter(strukContent);
+                
+                alert('✅ Struk berhasil dicetak!');
+                
+            } catch (error) {
+                console.error('Print error:', error);
+                alert('❌ Gagal cetak: ' + error.message);
+            }
+        }
+
+        function updatePrintButton() {
+            const btnPrint = document.getElementById('btn-print');
+            btnPrint.disabled = !(bluetoothDevice && bluetoothDevice.gatt.connected);
+        }
+
+        function formatStrukUntukPrinter() {
+            let struk = '';
+            
+            // ESC/POS commands
+            struk += '\x1B\x40'; // Initialize printer
+            struk += '\x1B\x61\x01'; // Center alignment
+            
+            // Header
+            struk += '==============================\n';
+            struk += '       WARUNG AL SAKHO       \n';
+            struk += ' Bayalangu Kidul, Kab. Cirebon \n';
+            struk += '==============================\n\n';
+            
+            struk += '\x1B\x61\x00'; // Left alignment
+            struk += 'BARANG BELANJA:\n';
+            struk += '------------------------------\n';
+            
+            // Items
+            keranjang.forEach(k => {
+                const nama = k.nama.length > 20 ? k.nama.substring(0, 17) + '...' : k.nama;
+                struk += `${k.jumlah}x ${nama}\n`;
+                struk += `  @${k.harga.toLocaleString('id-ID')} = ${k.total.toLocaleString('id-ID')}\n`;
+            });
+            
+            // Total
+            const total = keranjang.reduce((sum, k) => sum + k.total, 0);
+            const bayar = unformatRupiah(document.getElementById('nominal-pembeli').value) || 0;
+            const kembalian = bayar - total;
+            
+            struk += '------------------------------\n';
+            struk += `TOTAL     : Rp ${total.toLocaleString('id-ID')}\n`;
+            struk += `BAYAR     : Rp ${bayar.toLocaleString('id-ID')}\n`;
+            struk += `KEMBALIAN : Rp ${kembalian.toLocaleString('id-ID')}\n`;
+            struk += '==============================\n\n';
+            
+            struk += '\x1B\x61\x01'; // Center alignment
+            struk += 'Terima kasih telah belanja   ditoko kami!\n';
+            
+            // TAMBAHAN: Enter 5 kali untuk jarak dengan kertas berikutnya
+            struk += '\n\n\n\n\n';
+            
+            // Paper cut (jika supported)
+            struk += '\x1B\x69';
+            
+            return struk;
         }
 
         function exportToWA() {
