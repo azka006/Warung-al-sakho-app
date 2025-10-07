@@ -2306,7 +2306,7 @@
                 if (statusEl.style.display !== 'none') {
                     statusEl.style.display = 'none';
                 }
-            }, 6500);
+            }, 10000);
         }
         
         // 📱 FOCUS BARCODE SCANNER
