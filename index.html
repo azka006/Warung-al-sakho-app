@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Al Sakho</title>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="theme-color" content="#1a3c34">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Warung Al Sakho">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.8/lottie.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single+Ink:wght@100..900&family=Caprasimo&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" id="main-theme">
+</head>
+<body>
+    <h1><i class="fas fa-store"></i> Warung Al Sakho</h1>
+    <div id="voice-status" class="voice-status" style="display: none;"></div>
+    <nav>
+        <button onclick="toggleDropdown()" class="dropdown-toggle">
+            <i class="fas fa-bars"></i> Menu
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+        </button>
+        <div id="dropdown-menu" class="dropdown-content">
+            <button onclick="switchSection('manajemen')"><i class="fas fa-boxes"></i> Manajemen Barang</button>
+            <button onclick="switchSection('penjualan')"><i class="fas fa-shopping-cart"></i> Penjualan</button>
+            <button onclick="switchSection('statistik')"><i class="fas fa-chart-line"></i> Statistik</button>
+            <button onclick="switchSection('backup')"><i class="fas fa-database"></i> Backup/Restore</button>
+            <button onclick="switchSection('catatan')"><i class="fas fa-sticky-note"></i> Catatan</button>
+            <button onclick="switchSection('storage')"><i class="fas fa-hdd"></i> Storage</button>
+            <button onclick="switchSection('rekam-pendapatan')" id="menu-rekam-pendapatan">
+            <i class="fas fa-coins"></i> Rekam Pendapatan & Stok
+            <span id="stok-alert-badge" class="alert-badge" style="display: none"></span>
+    </button>
+        </div>
+    </nav>
+
+    <section id="manajemen">
+        <nav>
+            <button onclick="switchSubManajemen('tambah-barang')"><i class="fas fa-plus-circle"></i> Tambah Barang</button>
+            <button onclick="switchSubManajemen('update-stok')"><i class="fas fa-boxes"></i> Update Stok</button>
+            <button onclick="switchSubManajemen('update-harga')"><i class="fas fa-tag"></i> Update Harga</button>
+            <button onclick="switchSubManajemen('tambah-barcode')"><i class="fas fa-barcode"></i> Tambah Barcode</button>
+        </nav>
+        <div id="tambah-barang" class="sub-active">
+            <h2><i class="fas fa-plus-circle"></i> Tambah Barang Baru</h2>
+            <input type="text" id="nama-baru" placeholder="Nama Barang">
+            <input type="text" id="harga-baru" placeholder="Harga (Rp)" oninput="formatRupiah(this)">
+            <input type="number" id="stok-awal" placeholder="Stok Awal">
+            <input type="text" id="barcode-baru" placeholder="Barcode (opsional)">
+            <button onclick="tambahBarangBaru()"><i class="fas fa-save"></i> Simpan</button>
+        </div>
+        <div id="update-stok">
+            <h2><i class="fas fa-boxes"></i> Update Stok</h2>
+            <input type="text" id="nama-update-stok" list="barang-list" placeholder="Nama Barang">
+            <datalist id="barang-list"></datalist>
+            <input type="number" id="update-stok-val" placeholder="Update Stok...">
+            <button onclick="updateStok()"><i class="fas fa-sync-alt"></i> Update</button>
+        </div>
+        <div id="update-harga">
+            <h2><i class="fas fa-tag"></i> Update Harga</h2>
+            <input type="text" id="nama-update-harga" list="barang-list" placeholder="Nama Barang">
+            <input type="text" id="harga-baru-update" placeholder="Harga Baru (Rp)" oninput="formatRupiah(this)">
+            <button onclick="updateHarga()"><i class="fas fa-save"></i> Simpan</button>
+        </div>
+        <div id="tambah-barcode">
+            <h2><i class="fas fa-barcode"></i> Tambah Barcode</h2>
+            <input type="text" id="nama-tambah-barcode" list="barang-list" placeholder="Nama Barang">
+            <input type="text" id="barcode-tambah" placeholder="Barcode">
+            <button onclick="tambahBarcode()"><i class="fas fa-save"></i> Simpan</button>
+        </div>
+    </section>
+
+    <section id="penjualan">
+        <h2><i class="fas fa-search"></i> Pencarian Barang</h2>
+        <input type="text" id="search-nama" placeholder="Cari Nama Barang" oninput="cariBarang()">
+        <div class="table-container">
+            <table id="search-result">
+                <thead><tr><th>Nama</th><th>Harga</th><th>Stok</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <button onclick="startScanner()"><i class="fas fa-qrcode"></i> Scan Barcode</button>
+        <button onclick="stopScanner()" style="display: none;" id="tutup-scanner"><i class="fas fa-times"></i> Tutup Scanner</button>
+        <div id="scanner-container"></div>
+        <h2><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h2>
+        <div class="table-container">
+            <table id="keranjang">
+                <thead><tr><th>Nama</th><th>Harga</th><th>Jumlah</th><th>Total</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <h3><i class="fas fa-money-bill-wave"></i> Total Harga: <span id="total-harga">0</span></h3>
+        <div style="display:flex;gap:10px;margin:15px 0">
+          <button onclick="bayarTransaksi()" id="btn-bayar" disabled>
+            <i class="fas fa-check-circle"></i> Bayar
+          </button>
+          <button onclick="batalTransaksi()" id="btn-batal" disabled>
+            <i class="fas fa-times-circle"></i> Batal Transaksi
+          </button>
+        </div>
+        <input type="text" id="nominal-pembeli" placeholder="Nominal Pembeli (Rp)" oninput="formatRupiah(this); hitungKembalian()">
+        <h3><i class="fas fa-exchange-alt"></i> Kembalian: <span id="kembalian">0</span></h3>
+        <button onclick="connectBluetoothPrinter()">
+            <i class="fa-brands fa-bluetooth fa-beat"></i> Connect Printer
+        </button>
+        <div id="bluetooth-status" class="storage-info">
+        <i class="fas fa-bluetooth"></i> Status Printer: <span>Tidak Terhubung</span>
+        </div>
+        <button onclick="cetakStrukBluetoothLangsung()" id="btn-print">
+            <i class="fas fa-receipt"></i> Print Struk
+        </button>
+        <button onclick="exportToWA()"><i class="fab fa-whatsapp"></i> Export ke WA</button>
+        <h2><i class="fas fa-history"></i> Riwayat Belanja</h2>
+        <ul id="riwayat-list"></ul>
+    </section>
+
+    <section id="statistik">
+        <h2><i class="fas fa-chart-bar"></i> Omset Perbulan</h2>
+        <canvas id="omset-chart"></canvas>
+        <h2><i class="fas fa-trophy"></i> Top 10 Barang Terlaris Bulan Ini</h2>
+        <canvas id="top-barang-chart"></canvas>
+        <h2><i class="fas fa-money-bill"></i> Laba Bersih Perbulan (10%)</h2>
+        <canvas id="laba-chart"></canvas>
+    </section>
+
+    <section id="backup">
+        <h2><i class="fas fa-database"></i> Backup & Restore Data</h2>
+        <button onclick="backupJSON()"><i class="fas fa-file-export"></i> Backup JSON</button>
+        <button onclick="backupTXT()"><i class="fas fa-file-export"></i> Backup TXT</button>
+        <button onclick="backupCSV()"><i class="fas fa-file-export"></i> Backup CSV</button>
+        <h3><i class="fas fa-file-import"></i> Restore Data</h3>
+        <input type="file" id="restore-file" accept=".json">
+        <button onclick="restoreJSON()"><i class="fas fa-file-import"></i> Restore JSON</button>
+          <div class="peringatan">
+          <h4><i class="fas fa-exclamation-triangle"></i> Peringatan Restore Data</h4>
+          <p>
+              Proses <strong>Restore Data</strong> akan <strong style="color: #d32f2f;">menggantikan semua data yang ada</strong> dengan data dari file backup. 
+              Semua data lama akan dihapus permanen dan tidak dapat dikembalikan. Pastikan Anda telah membackup data terbaru sebelum melakukan restore.
+          </p>
+      </div>
+    </section>
+
+    <section id="catatan">
+        <h2><i class="fas fa-sticky-note"></i> Catatan Warung</h2>
+        <textarea id="catatan-text" rows="10" cols="50" placeholder="Tulis catatan penting untuk warung di sini..."></textarea>
+        <button onclick="simpanCatatan()" style="background: linear-gradient(to bottom, #4CAF50, #2E7D32);"><i class="fas fa-save"></i> Simpan</button>
+    </section>
+
+    <section id="storage">
+        <h2><i class="fas fa-hdd"></i> Kapasitas Storage</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3><i class="fas fa-box"></i> Data Barang</h3>
+                <p id="jumlah-barang">0</p>
+                <span>Item tersimpan</span>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-history"></i> Data Riwayat</h3>
+                <p id="jumlah-riwayat">0</p>
+                <span>Transaksi tersimpan</span>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-database"></i> Total Data</h3>
+                <p id="total-data">0</p>
+                <span>Item dalam database</span>
+            </div>
+        </div>
+        <h3><i class="fas fa-chart-pie"></i> Penggunaan Storage</h3>
+        <div id="storage-bar"><div id="storage-progress"></div></div>
+        <p id="storage-info"></p>
+        <button onclick="updateStorageInfo()"><i class="fas fa-sync-alt"></i> Update</button>
+    </section>
+
+    <!-- REKAM PENDAPATAN HARIAN -->
+        <section id="rekam-pendapatan" class="card">
+          <h2><i class="fas fa-record-vinyl"></i> Rekam Pendapatan Harian</h2>
+        
+          <!-- Toggle ON / OFF -->
+          <label class="switch">
+            <input type="checkbox" id="toggle-rekam">
+            <span class="slider"></span>
+          </label>
+          <span id="rekam-status">Non-aktif</span>
+        
+          <!-- Tombol lihat laporan (muncul kalau aktif) -->
+          <button id="btn-lihat-laporan" onclick="tampilkanLaporanHarian()" style="display:none">
+            <i class="fas fa-file-invoice"></i> Lihat Laporan Hari Ini
+          </button>
+          <!-- ===== LAPORAN STOK MAU HABIS ===== -->
+            <div class="stok-warning-container">
+                <h3><i class="fas fa-exclamation-triangle"></i> Laporan Stok Mau Habis</h3>
+                
+                <div class="stok-info">
+                    <p><strong>Barang dengan stok kurang dari 5:</strong></p>
+                    <div id="stok-warning-list" class="stok-list">
+                        <!-- List barang akan dimuat di sini -->
+                    </div>
+                </div>
+            </div>
+            <div class="restock-container">
+                <h3><i class="fas fa-shopping-basket"></i> Daftar Belanja Restock</h3>
+                
+                <div class="restock-info">
+                    <p><strong>Barang dengan stok kurang dari 2 (Centang untuk restock):</strong></p>
+                    <div id="restock-list" class="restock-list">
+                        <!-- List barang restock akan dimuat di sini -->
+                    </div>
+                </div>
+                
+                <div class="restock-summary">
+                    <h4><i class="fas fa-calculator"></i> Total Belanja Restock: 
+                        <span id="total-restock">Rp 0</span>
+                    </h4>
+                </div>
+                
+                <button onclick="cetakLaporanStokDanRestockBluetooth()" id="btn-cetak-restock">
+                    <i class="fas fa-print"></i> Cetak Laporan + Daftar Restock
+                </button>
+            </div>
+        </section>
+
+    <div class="struk" id="struk-print">
+        ============================<br>
+              WARUNG AL SAKHO      <br>
+        Bayalangu Kidul, Kab. Cirebon  <br>
+        ============================<br>
+                 BARANG BELANJA        <br>
+        ============================<br>
+        <div id="struk-items"></div><br>
+        ============================<br>
+         TOTAL: Rp<span id="struk-total">0</span><br>
+         LABA BERSIH (10%): Rp<span id="struk-laba">0</span>  <br>
+        ============================
+    </div>
+
+    <!-- Modal untuk tambah barang dari barcode -->
+    <div id="modal-tambah-barang" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Tambah Barang Baru</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <p>Barcode <strong id="barcode-terdeteksi"></strong> tidak ditemukan. Tambah barang baru?</p>
+            <input type="text" id="modal-nama" placeholder="Nama Barang">
+            <input type="text" id="modal-harga" placeholder="Harga (Rp)" oninput="formatRupiah(this)">
+            <input type="number" id="modal-stok" placeholder="Stok Awal">
+            <button onclick="tambahBarangDariBarcode()"><i class="fas fa-save"></i> Simpan</button>
+        </div>
+    </div>
+
+    <!-- Pop-up Laporan -->
+    <div id="popup-laporan" class="modal">
+      <div class="modal-content" style="max-width:400px">
+        <div class="modal-header">
+          <h3>Laporan Pendapatan <span id="laporan-tanggal"></span></h3>
+          <span class="close-modal" onclick="tutupLaporan()">&times;</span>
+        </div>
+    
+        <p><strong>Total Pendapatan :</strong> Rp <span id="total-pendapatan">0</span></p>
+        <p><strong>Laba Bersih (10%) :</strong> Rp <span id="laba-harian">0</span></p>
+    
+        <h4>Barang Terjual :</h4>
+        <ul id="daftar-barang-terjual" style="max-height:200px;overflow:auto"></ul>
+    
+        <button onclick="tutupLaporan()">Tutup</button>
+      </div>
+    </div>
+
+    <!-- Modal Varian -->
+      <div id="modal-varian" class="modal">
+        <div class="modal-content varian-box">
+          <div class="modal-header">
+            <h3>Pilih Varian</h3>
+            <span class="close" onclick="tutupVarian()">&times;</span>
+          </div>
+          <div id="varian-list" class="varian-list"></div>
+          <div class="modal-footer">
+            <button onclick="tutupVarian()">Batal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol floating META -->
+      <button id="btn-meta" class="btn-float-meta" onclick="bukaModalMeta()">
+          <i class="fas fa-star"></i>
+      </button>
+      
+      <!-- Modal Meta -->
+      <div id="modal-meta" class="modal">
+          <div class="modal-content" style="max-width:400px">
+              <div class="modal-header">
+                  <h3><i class="fas fa-star"></i> Barang Favorit</h3>
+                  <span class="close" onclick="tutupModalMeta()">&times;</span>
+              </div>
+      
+              <!-- Dropdown Pilih Barang -->
+              <div style="margin-bottom:15px">
+                  <label style="display:block; margin-bottom:8px; font-weight:600; color:#1a3c34;">
+                      <i class="fas fa-list"></i> Pilih Barang:
+                  </label>
+                  <select id="meta-dropdown" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:1rem;">
+                      <option value="">-- Pilih barang yang sering laku --</option>
+                  </select>
+              </div>
+      
+              <!-- Tombol Tambah ke Favorit -->
+              <button onclick="tambahKeMeta()" style="width:100%; padding:12px; margin-bottom:20px; background:linear-gradient(to bottom,#ff9800,#e65100); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+                  <i class="fas fa-plus"></i> Tambah ke Favorit
+              </button>
+      
+              <!-- Daftar Barang Favorit -->
+              <div style="margin-bottom:15px">
+                  <h4 style="color:#1a3c34; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                      <i class="fas fa-fire"></i> Barang Favorit 
+                      <span id="jumlah-meta" style="background:#ff9800; color:white; padding:2px 8px; border-radius:12px; font-size:0.8rem;">0</span>
+                  </h4>
+                  <div id="daftar-barang-meta" style="max-height:200px; overflow-y:auto; border:1px solid #ffcc80; border-radius:8px; padding:10px; background:#fff8e1;">
+                      <!-- List barang favorit akan diisi di sini -->
+                  </div>
+              </div>
+      
+              <!-- Tombol Aksi -->
+              <div style="display:flex; gap:10px;">
+                  <button onclick="tambahSemuaKeKeranjang()" style="flex:1; padding:10px; background:linear-gradient(to bottom,#4CAF50,#2E7D32); color:white; border:none; border-radius:8px; cursor:pointer;">
+                      <i class="fas fa-cart-plus"></i> Ke Keranjang
+                  </button>
+                  <button onclick="tutupModalMeta()" style="flex:1; padding:10px; background:#1a3c34; color:white; border:none; border-radius:8px; cursor:pointer;">
+                      <i class="fas fa-times"></i> Tutup
+                  </button>
+              </div>
+          </div>
+      </div>
+
+    <!-- Tombol Mic Fixed -->
+    <button id="voice-command-btn" class="voice-command-fixed" onclick="startVoiceSearch()">
+        <i class="fa-solid fa-robot fa-shake"></i>
+    </button>
+
+    <!-- Splash Screen Template -->
+    <div id="splash-screen" aria-live="polite" aria-label="Layar pembuka aplikasi">
+        <div id="lottie-animation" role="img" aria-label="Animasi loading aplikasi"></div>
+        <div class="splash-text-container">
+            <p id="splash-text"></p>
+            <p id="splash-subtext"></p>
+        </div>
+    </div>
+
+    <!-- Tambah di sebelum </body> -->
+      <div id="custom-modal" class="custom-modal">
+          <div class="modal-content-costum">
+              <div class="modal-header-custom">
+                  <h3 id="modal-title">Informasi</h3>
+                  <span class="close-modal-costum" onclick="closeCustomModal()">&times;</span>
+              </div>
+              <div class="modal-body" id="modal-body">
+                  <!-- Konten akan diisi via JavaScript -->
+              </div>
+          </div>
+      </div>
+
+      <!-- Tambah sebelum </body> -->
+    <div id="theme-switcher-modal" class="custom-modal">
+        <div class="modal-content-costum">
+            <div class="modal-header-custom">
+                <h3><i class="fas fa-palette"></i> Pilih Tema Warung</h3>
+                <span class="close-modal" onclick="closeThemeSwitcher()">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Theme Selection -->
+                <div class="theme-selection">
+                    <div class="theme-option" onclick="switchTheme('normal')" data-theme="normal">
+                        <div class="theme-preview normal-theme">
+                            <div class="theme-header"></div>
+                            <div class="theme-content">
+                                <div class="theme-card"></div>
+                                <div class="theme-button primary"></div>
+                                <div class="theme-button success"></div>
+                            </div>
+                        </div>
+                        <div class="theme-info">
+                            <h4>🏪 Tema Normal</h4>
+                            <p>Default hijau profesional</p>
+                            <span class="theme-badge" id="badge-normal">✓ Aktif</span>
+                        </div>
+                    </div>
+    
+                    <div class="theme-option" onclick="switchTheme('estetik')" data-theme="estetik">
+                        <div class="theme-preview estetik-theme">
+                            <div class="theme-header"></div>
+                            <div class="theme-content">
+                                <div class="theme-card"></div>
+                                <div class="theme-button primary"></div>
+                                <div class="theme-button success"></div>
+                            </div>
+                        </div>
+                        <div class="theme-info">
+                            <h4>🌸 Tema Estetik</h4>
+                            <p>Warna pastel yang lembut</p>
+                            <span class="theme-badge" id="badge-estetik">Pilih</span>
+                        </div>
+                    </div>
+    
+                    <div class="theme-option" onclick="switchTheme('elegan')" data-theme="elegan">
+                        <div class="theme-preview elegan-theme">
+                            <div class="theme-header"></div>
+                            <div class="theme-content">
+                                <div class="theme-card"></div>
+                                <div class="theme-button primary"></div>
+                                <div class="theme-button success"></div>
+                            </div>
+                        </div>
+                        <div class="theme-info">
+                            <h4>💼 Tema Elegan</h4>
+                            <p>Dark mode premium</p>
+                            <span class="theme-badge" id="badge-elegan">Pilih</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Theme Test Section -->
+                <div class="theme-test-section">
+                    <h4><i class="fas fa-eye"></i> Preview Tema</h4>
+                    <div class="theme-test-card">
+                        <div class="test-header">
+                            <h5>Contoh Kartu</h5>
+                        </div>
+                        <div class="test-content">
+                            <p>Ini adalah contoh tampilan dengan tema yang dipilih</p>
+                            <div class="test-buttons">
+                                <button class="test-btn primary">Tombol Primary</button>
+                                <button class="test-btn success">Tombol Success</button>
+                                <button class="test-btn danger">Tombol Danger</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button onclick="testCurrentTheme()" class="test-theme-btn">
+                    <i class="fas fa-play"></i> Test Suara Tema
+                </button>
+                <button onclick="closeThemeSwitcher()" class="close-theme-btn">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+    <p> Aplikasi Warung Al Sakho &copy; 2 Oktober 2025 </p>
+    </footer>
+
+    <script src="script.js">
+    </script>
+<script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+
+  // Install prompt
+  let deferredPrompt;
+  const installButton = document.createElement('button');
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Tampilkan tombol install
+    installButton.style.display = 'block';
+    installButton.textContent = 'Install Aplikasi';
+    installButton.style.margin = '10px auto';
+    installButton.style.padding = '10px 20px';
+    installButton.style.background = 'linear-gradient(to bottom, #4CAF50, #2E7D32)';
+    installButton.style.color = 'white';
+    installButton.style.border = 'none';
+    installButton.style.borderRadius = '5px';
+    installButton.style.cursor = 'pointer';
+    
+    document.querySelector('h1').after(installButton);
+    
+    installButton.addEventListener('click', async () => {
+      installButton.style.display = 'none';
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+    });
+  });
+
+  // Deteksi jika app sudah diinstall
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    if (installButton) installButton.style.display = 'none';
+  });
+</script>
+</body>
+</html>
